@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="jquery-ui.min.css" />
+    <link rel="stylesheet" href="jquery-ui.structure.css" />
+    <link rel="stylesheet" href="jquery-ui.theme.css" />
+    <script src="jquery-3.6.0.min.js"></script>
+    <script src="jquery-ui.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="left">
+            <div class="set hearts"></div>
+            <div class="set diamonds"></div>
+            <div class="set spades"></div>
+            <div class="set clubs"></div>
+        </div>
+        <div class="right">
+            <div class="droppable dropZone hearts"></div>
+            <div class="droppable dropZone diaomonds"></div>
+            <div class="droppable dropZone spades"></div>
+            <div class="droppable dropZone clubs"></div>
+        </div>
+    </div>
+    <style>
+        * {
+            user-select: none
+        }
+
+        body {
+            background-color: rgb(59, 59, 59)
+        }
+
+        .container,
+        .right {
+            display: flex
+        }
+
+        .set,
+        .dropZone {
+            font-size: 120px
+        }
+
+        .hearts,
+        .diamonds {
+            color: rgb(168, 11, 11)
+        }
+
+        .spades,
+        .clubs {
+            color: black
+        }
+
+        .card {
+            background: url(fg.png);
+            line-height: 124px;
+            height: 121px;
+            display: inline-block;
+            width: 81px;
+            padding-left: 2px;
+            border-radius: 4px;
+            border: 1px solid rgb(179, 149, 108);
+        }
+
+        .draggable {
+            cursor: pointer
+        }
+
+        .dropZone {
+            display: flex;
+            flex-direction: column;
+            padding: 5px;
+            width: 85px;
+            height: 123px;
+            background-color: rgb(110, 110, 110);
+            border: 1px solid black;
+        }
+
+        .ui-draggable-dragging {
+            z-index: 9999
+        }
+    </style>
+    <script>
+        const createCard = (code) => {
+            return $('<span>').addClass('card draggable').text(String.fromCodePoint(code))
+        }
+
+        const aceCodes = { hearts: 0x1F0B1, diamonds: 0x1F0C1, spades: 0x1F0A1, clubs: 0x1F0D1 }
+
+        for (const code in aceCodes) {
+            var setOfCards = $(`.${code}`).eq(0)
+            var aceCode = aceCodes[code]
+
+            for (var i = 0; i < 13; i++) {
+                //skip knight (between jack and queen)
+                if (i == 11) {
+                    aceCode++
+                }
+
+                var card = createCard(aceCode++)
+                setOfCards.append(card)
+            }
+        }
+
+        $(() => {
+            const suits = ['hearts', 'diamonds', 'spades', 'clubs']
+
+            $('.draggable').draggable({
+                revertDuration: 5000,
+                revert: function (event, ui) {
+                    $(this).data("ui-draggable").originalPosition = {
+                        top: 0,
+                        left: 0
+                    }
+                    return !event;
+                }
+            })
+
+            $(".droppable").droppable({
+                drop: function (event, ui) {
+                    console.log(event)
+                    console.log(ui.draggable[0])
+                    var elem = $(this)
+                    var dropped = $(ui.draggable[0])
+
+                    var elemSuit
+                    for (let suit of suits) {
+                        let index = elem.attr('class').indexOf(suit)
+
+                        if (index !== -1) {
+                            elemSuit = suit
+                            break
+                        }
+                    }
+
+                    console.log(elemSuit)
+                    if (dropped.parent().hasClass(elemSuit)) {
+                        var count = elem.children().length
+                        var top = count * 90 * -1
+                        dropped.attr('style', `transform: translate(0, ${top}px)`)
+                        elem.append(dropped)
+                    } else {
+                        alert('Wrong suit')
+                    }
+                }
+            });
+        })
+    </script>
+</body>
+
+</html>
