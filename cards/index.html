@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="jquery-ui.theme.css" />
     <script src="jquery-3.6.0.min.js"></script>
     <script src="jquery-ui.min.js"></script>
+    <script src="jquery.ui.touch-punch.min.js"></script>
 </head>
 
 <body>
@@ -224,7 +225,7 @@
                     var elem = $(this)
                     var dropped = $(ui.draggable[0])
                     var elemSuit
-                    
+
                     for (let suit of suits) {
                         let index = elem.attr('class').indexOf(suit)
 
