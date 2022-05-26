@@ -19,11 +19,20 @@
             <div class="set spades"></div>
             <div class="set clubs"></div>
         </div>
-        <div class="right">
+        <div class="right hidden">
             <div class="droppable dropZone hearts" data-suit="hearts"></div>
             <div class="droppable dropZone diamonds" data-suit="diamonds"></div>
             <div class="droppable dropZone spades" data-suit="spades"></div>
             <div class="droppable dropZone clubs" data-suit="clubs"></div>
+        </div>
+        <div class="right">
+            <div class="droppable dropZone"></div>
+            <div class="droppable dropZone"></div>
+            <div class="droppable dropZone"></div>
+            <div class="droppable dropZone"></div>
+            <div class="droppable dropZone"></div>
+            <div class="droppable dropZone"></div>
+            <div class="droppable dropZone"></div>
         </div>
     </div>
     <style>
@@ -32,6 +41,8 @@
         }
 
         body {
+            margin: 0;
+            padding: 0;
             background-color: rgb(59, 59, 59)
         }
 
@@ -55,6 +66,10 @@
             color: black
         }
 
+        .hidden {
+            display: none;
+        }
+
         .card {
             background: url(fg.png);
             line-height: 124px;
@@ -64,6 +79,14 @@
             padding-left: 2px;
             border-radius: 4px;
             border: 1px solid rgb(179, 149, 108);
+        }
+
+        .card:hover {
+            border: 1px solid white
+        }
+        
+        .card span {
+            display: inline-block;
         }
 
         .draggable {
@@ -82,33 +105,21 @@
 
         .dropZone.hearts::before {
             content: "\1F0B1";
-            line-height: 126px;
-            margin-left: 3px;
-            color: black;
-            opacity: 0.3;
-            height: 0px;
         }
 
         .dropZone.diamonds::before {
             content: "\1F0C1";
-            line-height: 126px;
-            margin-left: 3px;
-            color: black;
-            opacity: 0.3;
-            height: 0px;
         }
 
         .dropZone.spades::before {
             content: "\1F0A1";
-            line-height: 126px;
-            margin-left: 3px;
-            color: black;
-            opacity: 0.3;
-            height: 0px;
         }
 
         .dropZone.clubs::before {
             content: "\1F0D1";
+        }
+
+        .dropZone::before {
             line-height: 126px;
             margin-left: 3px;
             color: black;
@@ -116,7 +127,7 @@
             height: 0px;
         }
 
-        .ui-draggable-dragging {
+        .ui-draggable-dragging, .ui-draggable-dragging span {
             z-index: 9999
         }
 
@@ -139,17 +150,17 @@
         const aceCodes = { hearts: 0x1F0B1, diamonds: 0x1F0C1, spades: 0x1F0A1, clubs: 0x1F0D1 }
         //offsets to get rid of knight 'C'
         const offsets = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13]
-        const cards = ['a', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
+        const cards = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
 
         const createCard = (suit, aceCode, offset) => {
             let cardValue = cards[offsets.indexOf(offset)]
             let cardClass = `card-${cardValue}-of-${suit}`
 
             return $('<span>')
-                .addClass(`card draggable ${cardClass}`)
+                .addClass(`card draggable ${cardClass} ${suit}`)
                 .attr('data-suit', suit)
                 .attr('data-card-value', cardValue)
-                .text(String.fromCodePoint(aceCode + offset))
+                .append($('<span>').text(String.fromCodePoint(aceCode + offset)))
         }
 
         for (const suit in aceCodes) {
@@ -169,12 +180,16 @@
                 return element.data('suit')
             }
 
+            const getSuitColor = (suit) => {
+                return ['hearts', 'diamonds'].indexOf(suit) !== -1 ? 'red' : 'black'
+            }
+
             const getValue = (element) => {
                 return '' + (element.data('card-value') ?? 'EMPTY')
             }
 
             //checks if cardInHand can be put on cardOnTable
-            const isAllowed = (cardInHand, cardOnTable) => {
+            const isAllowedDemo = (cardInHand, cardOnTable) => {
                 //cardOnTable may be a suit container, then only ace allowed
                 if (cardOnTable.children().length) {
                     cardOnTable = cardOnTable.children().last()
@@ -187,7 +202,7 @@
 
                 if (handSuit == tableSuit) {
                     //ace on empty drop zone
-                    if (tableValue == 'EMPTY' && handValue == 'a') {
+                    if (tableValue == 'EMPTY' && handValue == 'A') {
                         return true
                     } else if (cards.indexOf(handValue) - cards.indexOf(tableValue) == 1) {
                         return true
@@ -199,12 +214,45 @@
                 return false
             }
 
+            //checks if cardInHand can be put on cardOnTable
+            const isAllowed = (cardInHand, cardOnTable) => {
+                //cardOnTable may be a suit container, then only ace allowed
+                if (cardOnTable.children().length) {
+                    cardOnTable = cardOnTable.children().last()
+                }
+
+                const handSuit = getSuit(cardInHand)
+                const tableSuit = getSuit(cardOnTable)
+                const handSuitColor = getSuitColor(handSuit)
+                const tableSuitColor = getSuitColor(tableSuit)
+                const handValue = getValue(cardInHand)
+                const tableValue = getValue(cardOnTable)
+
+                //king on empty drop zone
+                if (tableValue == 'EMPTY' && handValue == 'K') {
+                    return true
+                }
+
+                if (handSuitColor != tableSuitColor && cards.indexOf(tableValue) - cards.indexOf(handValue) == 1) {
+                    return true
+                }
+
+                console.log(handSuit, tableSuit, handValue, tableValue, handSuitColor, tableSuitColor)
+
+                return false
+            }
+
             const wrongMove = () => {
                 const mainDiv = $('<div>').attr('id', 'error-message').hide().text('WRONG MOVE!')
                 $('body').append(mainDiv)
                 $('#error-message').fadeIn(500, () => {
                     setTimeout(() => { $('#error-message').fadeOut(500, () => { $('#error-message').remove() }) }, 500)
                 })
+            }
+
+            const setDraggable = () => {
+                $('.dropZone span').draggable('disable')
+                $('.dropZone span:last-child').draggable('enable')
             }
 
             $('.draggable').draggable({
@@ -238,9 +286,12 @@
                     if (isAllowed(dropped, elem)) {
                         var count = elem.children().length
                         var top = count * 90 * -1
-                        dropped.attr('style', `transform: translate(0, ${top}px)`)
+                        dropped.attr('style', `position: relative; transform: translate(0, ${top}px)`)
+                        dropped.removeClass('ui-draggable-dragging')
+                        // elem.children().draggable('disable')
                         elem.append(dropped)
-                        dropped.draggable('disable')
+                        // dropped.draggable('disable')
+                        setDraggable()
                     } else {
                         wrongMove()
                         dropped.draggable('option', 'revert', true)
