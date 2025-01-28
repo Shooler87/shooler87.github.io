@@ -1,6 +1,6 @@
 Z klasówki:
-1. (6.) Tomek wyruszył na wycieczkę rowerową o godzinie 8:30. Rozpoczął ją z zapałem, więc przez pierwsze dwie godziny jechał z prędkością 15km/h. Przez następną godzinę poruszał się z prędkością 12km/h, po czym przez pół z prędkością10km/h. Ostatni kwadrans jechał z prędkością 8km/h. O której godzinie skończył wycieczkę i jaką drogę przejechał?
-2. (8.) Ola idzie do szkoły z prędkością 5/4 m/s. Dom Oli jest odległy od szkoły o 0,75km. O której godzinie najpóźinej Ola musi wyjść z domu aby zdążyć do szkoły na gdozinę 9:20?
+1. (6.) Tomek wyruszył na wycieczkę rowerową o godzinie 8:30. Rozpoczął ją z zapałem, więc przez pierwsze dwie godziny jechał z prędkością 15km/h. Przez następną godzinę poruszał się z prędkością 12km/h, po czym przez pół godziny z prędkością 10km/h. Ostatni kwadrans jechał z prędkością 8km/h. O której godzinie skończył wycieczkę i jaką drogę przejechał?
+2. (8.) Ola idzie do szkoły z prędkością 5/4 m/s. Dom Oli jest odległy od szkoły o 0,75km. O której godzinie najpóźinej Ola musi wyjść z domu aby zdążyć do szkoły na godzinę  9:20?
 3. (9.) Pieszy i rowerzysta wyruszyli z tego samego miejsca o godzinie 8:00. Mieli do pokonania dystans 18km. Wiadomo, że pieszy poruszał się z prędkością 6km/h oraz że rowerzysta dotarl do celu o godzinie 9:30. Jaka była odległość pomiędzy nimi po 20 minutach od startu?
 
 Nowe (z drobnymi zmianami)
